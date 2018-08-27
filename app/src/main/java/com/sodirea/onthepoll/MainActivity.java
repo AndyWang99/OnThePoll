@@ -1,6 +1,7 @@
 package com.sodirea.onthepoll;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,27 +20,8 @@ public class MainActivity extends AppCompatActivity {
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Create New Poll");
-                builder.setMessage("Enter a name for your poll:");
-                final EditText inputPollName = new EditText(MainActivity.this);
-                inputPollName.setId((Integer) 1);
-                builder.setView(inputPollName);
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        EditText input = (EditText) ((AlertDialog) dialogInterface).findViewById((Integer) 1);
-                        System.out.println(input.getText());
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-                AlertDialog createDialog = builder.create();
-                createDialog.show();
+                Intent intent = new Intent(MainActivity.this, CreatePollActivity.class);
+                startActivity(intent);
             }
         });
 
