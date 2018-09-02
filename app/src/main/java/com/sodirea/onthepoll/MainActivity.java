@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         EditText input = (EditText) ((AlertDialog) dialogInterface).findViewById((Integer) 2);
-                        System.out.println(input.getText());
+                        Intent intent = new Intent(MainActivity.this, VotePollActivity.class);
+                        intent.putExtra("pollID", input.getText().toString());
+                        startActivity(intent);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -67,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         EditText input = (EditText) ((AlertDialog) dialogInterface).findViewById((Integer) 3);
-                        System.out.println(input.getText());
+                        Intent intent = new Intent(MainActivity.this, ViewPollActivity.class);
+                        intent.putExtra("pollID", input.getText().toString());
+                        startActivity(intent);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

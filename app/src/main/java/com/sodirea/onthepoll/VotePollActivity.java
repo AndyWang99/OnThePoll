@@ -1,12 +1,12 @@
 package com.sodirea.onthepoll;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,28 +19,28 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 
-public class ViewPollActivity extends AppCompatActivity {
+public class VotePollActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_poll);
+        setContentView(R.layout.activity_vote_poll);
 
         final LinearLayout mainLayout = findViewById(R.id.main_layout);
 
         Intent intent = getIntent();
-        String pollID = intent.getStringExtra("pollID");
+        final String pollID = intent.getStringExtra("pollID");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("polls").document(pollID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
+                    final DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Map<String, Object> data = document.getData();
-                        TextView name = new TextView(ViewPollActivity.this);
+                        TextView name = new TextView(VotePollActivity.this);
                         name.setText((String) data.get("name"));
                         name.setTextSize(22);
                         name.setGravity(Gravity.CENTER);
@@ -48,21 +48,29 @@ public class ViewPollActivity extends AppCompatActivity {
 
                         Map<String, Object> options = (Map) data.get("options");
                         for (Map.Entry<String, Object> option : options.entrySet()) {
-                            TextView optionView = new TextView(ViewPollActivity.this);
-                            optionView.setText(option.getKey() + ": " + option.getValue());
-                            mainLayout.addView(optionView);
+                            final int optionVotes = (int) (long) option.getValue();
+                            final Button optionBtn = new Button(VotePollActivity.this);
+                            optionBtn.setText(option.getKey());
+                            optionBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    DocumentReference docRef2 = db.collection("polls").document(pollID);
+                                    docRef2.update("options." + optionBtn.getText(), optionVotes + 1);
+                                    Intent intent = new Intent(VotePollActivity.this, ViewPollActivity.class);
+                                    intent.putExtra("pollID", pollID);
+                                    startActivity(intent);
+                                }
+                            });
+                            mainLayout.addView(optionBtn);
                         }
                     } else {
                         Toast toast = Toast.makeText(getApplicationContext(), "Poll not found.", Toast.LENGTH_LONG);
                         toast.show();
-                        Intent intent = new Intent(ViewPollActivity.this, MainActivity.class);
+                        Intent intent = new Intent(VotePollActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
                 }
             }
         });
-        TextView pollIDView = new TextView(ViewPollActivity.this);
-        pollIDView.setText("Poll ID: " + pollID);
-        mainLayout.addView(pollIDView);
     }
 }

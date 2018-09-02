@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreatePollActivity" />
-        <activity android:name=".ViewPollActivity"></activity>
+        <activity android:name=".ViewPollActivity" />
+        <activity android:name=".VotePollActivity"></activity>
     </application>
 
 </manifest>
