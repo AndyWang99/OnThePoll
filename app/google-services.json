@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "427053773438",
+    "firebase_url": "https://onthepoll.firebaseio.com",
+    "project_id": "onthepoll",
+    "storage_bucket": "onthepoll.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427053773438:android:bbfa8305d83e3102",
+        "android_client_info": {
+          "package_name": "com.sodirea.onthepoll"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427053773438-3tvfq988kn831gj0ecfgvtnnp87erqq2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sodirea.onthepoll",
+            "certificate_hash": "53022a8c204de0ebe529c8637212f0928eb7b910"
+          }
+        },
+        {
+          "client_id": "427053773438-f2sfga8rcpu3gc07gj2d08avq46820q1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsBPq60XkkXlIenf-5aVWLC9Smmq7EIm4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427053773438-f2sfga8rcpu3gc07gj2d08avq46820q1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
