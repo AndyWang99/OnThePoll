@@ -45,6 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name"
+                android:singleLine="true"
                 tools:layout_editor_absoluteX="28dp"
                 tools:layout_editor_absoluteY="78dp" />
 
@@ -52,13 +53,15 @@
                 android:id="@+id/option1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Option 1" />
+                android:hint="Option 1"
+                android:singleLine="true" />
 
             <EditText
                 android:id="@+id/option2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Option 2" />
+                android:hint="Option 2"
+                android:singleLine="true" />
 
             <Button
                 android:id="@+id/add_option"

@@ -1,6 +1,8 @@
 package com.sodirea.onthepoll;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ public class CreatePollActivity extends AppCompatActivity {
                 EditText newOption = new EditText(CreatePollActivity.this);
                 newOption.setHint("Option " + counter);
                 newOption.setId(counter);
+                newOption.setSingleLine();
                 layout.addView(newOption);
                 layout.removeView(addOptionBtn); // puts button back to the bottom of the scrollview
                 layout.addView(addOptionBtn);
@@ -94,6 +97,10 @@ public class CreatePollActivity extends AppCompatActivity {
                                         toast.show();
                                         // add document id to user's shared preferences to list it in "your polls"
                                         String pollID = documentReference.getId();
+                                        SharedPreferences prefs = getSharedPreferences("created", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = prefs.edit();
+                                        editor.putBoolean(pollID, true);
+                                        editor.apply();
                                         // transition to view the newly created poll
                                         Intent intent = new Intent(CreatePollActivity.this, ViewPollActivity.class);
                                         intent.putExtra("pollID", pollID);

@@ -1,6 +1,8 @@
 package com.sodirea.onthepoll;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -56,6 +58,10 @@ public class VotePollActivity extends AppCompatActivity {
                                 public void onClick(View view) {
                                     DocumentReference docRef2 = db.collection("polls").document(pollID);
                                     docRef2.update("options." + optionBtn.getText(), optionVotes + 1);
+                                    SharedPreferences prefs = getSharedPreferences("voted", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.putBoolean(pollID, true);
+                                    editor.apply();
                                     Intent intent = new Intent(VotePollActivity.this, ViewPollActivity.class);
                                     intent.putExtra("pollID", pollID);
                                     startActivity(intent);

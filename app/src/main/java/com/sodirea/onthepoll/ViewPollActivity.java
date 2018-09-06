@@ -1,5 +1,8 @@
 package com.sodirea.onthepoll;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -7,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +31,11 @@ public class ViewPollActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_poll);
 
         final LinearLayout mainLayout = findViewById(R.id.main_layout);
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 20, 0, 20);
 
         Intent intent = getIntent();
-        String pollID = intent.getStringExtra("pollID");
+        final String pollID = intent.getStringExtra("pollID");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("polls").document(pollID);
@@ -46,10 +52,28 @@ public class ViewPollActivity extends AppCompatActivity {
                         name.setGravity(Gravity.CENTER);
                         mainLayout.addView(name);
 
+                        TextView pollIDView = new TextView(ViewPollActivity.this);
+                        pollIDView.setText("Poll ID: " + pollID + "    (Click to copy)");
+                        pollIDView.setGravity(Gravity.CENTER);
+                        pollIDView.setClickable(true);
+                        pollIDView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText(pollID, pollID);
+                                clipboard.setPrimaryClip(clip);
+                                Toast toast = Toast.makeText(ViewPollActivity.this, "Copied to clipboard!", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        });
+                        mainLayout.addView(pollIDView);
+
                         Map<String, Object> options = (Map) data.get("options");
                         for (Map.Entry<String, Object> option : options.entrySet()) {
                             TextView optionView = new TextView(ViewPollActivity.this);
                             optionView.setText(option.getKey() + ": " + option.getValue());
+                            optionView.setTextSize(18);
+                            optionView.setLayoutParams(params);
                             mainLayout.addView(optionView);
                         }
                     } else {
@@ -61,8 +85,11 @@ public class ViewPollActivity extends AppCompatActivity {
                 }
             }
         });
-        TextView pollIDView = new TextView(ViewPollActivity.this);
-        pollIDView.setText("Poll ID: " + pollID);
-        mainLayout.addView(pollIDView);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ViewPollActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }
