@@ -35,21 +35,24 @@ public class CreatePollActivity extends AppCompatActivity {
 
         final Button addOptionBtn = (Button) findViewById(R.id.add_option);
         addOptionBtn.setOnClickListener(new View.OnClickListener() {
+            // this variable keeps track of the number of options there are. initial value of counter is 3 because by default, there are already 2 options available
             int counter = 3;
             @Override
             public void onClick(View view) {
+                // creating the EditText view for a new option entry
                 LinearLayout layout = (LinearLayout) findViewById(R.id.option_container);
                 EditText newOption = new EditText(CreatePollActivity.this);
                 newOption.setHint("Option " + counter);
                 newOption.setId(counter);
                 newOption.setSingleLine();
                 layout.addView(newOption);
-                layout.removeView(addOptionBtn); // puts button back to the bottom of the scrollview
+                layout.removeView(addOptionBtn); // puts addOption button back to the bottom of the scrollview
                 layout.addView(addOptionBtn);
                 counter++;
             }
         });
 
+        // cancel button takes them back to the MainActivity
         Button cancel = (Button) findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,19 +66,24 @@ public class CreatePollActivity extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // map containing values that we will store into the database (specifically, the name of the poll, as well as a nested map containing all the options and number of votes each option has)
                 Map<String, Object> poll = new HashMap<>();
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+                // storing the name of the poll into the map, under the key "name"
                 String name = ((EditText) findViewById(R.id.name)).getText().toString();
                 poll.put("name", name);
 
+                // map containing the option names (key) and the number of votes (value) each option has
                 Map<String, Integer> optionsAndVotes = new HashMap<>();
+                // storing the first two options into this map (if the EditText field is not an empty string)
                 if (!((EditText) findViewById(R.id.option1)).getText().toString().matches("")) {
                     optionsAndVotes.put(((EditText) findViewById(R.id.option1)).getText().toString(), 0);
                 }
                 if (!((EditText) findViewById(R.id.option2)).getText().toString().matches("")) {
                     optionsAndVotes.put(((EditText) findViewById(R.id.option2)).getText().toString(), 0);
                 }
+                // storing any additional options that they created into the map (if not empty string)
                 int counter = 3;
                 while (findViewById(counter) != null) {
                     if (!((EditText) findViewById(counter)).getText().toString().matches("")) {
@@ -83,6 +91,7 @@ public class CreatePollActivity extends AppCompatActivity {
                     }
                     counter++;
                 }
+                // storing the nested map with option names and votes, under the key "options"
                 poll.put("options", optionsAndVotes);
 
                 if (!name.matches("")) { // ensure that there is a name
@@ -95,6 +104,7 @@ public class CreatePollActivity extends AppCompatActivity {
                                         // tell user that the poll was successfully created
                                         Toast toast = Toast.makeText(getApplicationContext(), "Poll created.", Toast.LENGTH_SHORT);
                                         toast.show();
+                                        // add document id to user's shared preferences of polls they have created
                                         // add document id to user's shared preferences to list it in "your polls"
                                         String pollID = documentReference.getId();
                                         SharedPreferences prefs = getSharedPreferences("created", Context.MODE_PRIVATE);
