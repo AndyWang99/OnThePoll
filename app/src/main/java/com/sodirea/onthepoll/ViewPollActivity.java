@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidplot.pie.PieChart;
+import com.androidplot.pie.PieRenderer;
+import com.androidplot.pie.Segment;
+import com.androidplot.pie.SegmentFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -81,15 +86,50 @@ public class ViewPollActivity extends AppCompatActivity {
                         });
                         mainLayout.addView(pollIDView);
 
-                        // creating the view for each option of the poll
                         Map<String, Object> options = (Map) data.get("options");
+                        PieChart pieChart = findViewById(R.id.pie_chart);
+                        pieChart.setTitle((String) data.get("name"));
+                        int i = 1; // determines how high the rgb values are collectively
+                        int j = 1; // determines which RGB value gets reduced further
+                        // creating the view for each option of the poll
                         for (Map.Entry<String, Object> option : options.entrySet()) {
                             TextView optionView = new TextView(ViewPollActivity.this);
                             optionView.setText(option.getKey() + ": " + option.getValue());
                             optionView.setTextSize(18);
                             optionView.setLayoutParams(params);
                             mainLayout.addView(optionView);
+
+                            // drawing the pie chart representation of the results
+                            if ((int) (long) option.getValue() > 0) {       // only draw a segment if it has votes
+                                Segment segment = new Segment(option.getKey(), (int) (long) option.getValue());
+                                int color = 255 * i / options.size();
+                                int red = color;
+                                int green = color;
+                                int blue = color;
+                                if (j == 1) {
+                                    red /= 2;
+                                } else if (j == 2) {
+                                    green /= 2;
+                                } else {
+                                    blue /= 2;
+                                }
+                                SegmentFormatter formatter = new SegmentFormatter(Color.rgb(red, green, blue));
+                                formatter.getLabelPaint().setTextSize(50f);
+                                formatter.setOuterInset(45f);
+                                pieChart.addSegment(segment, formatter);
+                                i++;
+                                if (j == 3) {
+                                    j = 1;
+                                } else {
+                                    j++;
+                                }
+                            }
                         }
+                        PieRenderer renderer = pieChart.getRenderer(PieRenderer.class);
+                        if (renderer != null) {
+                            renderer.setDonutSize(0.5f, PieRenderer.DonutMode.PERCENT);
+                        }
+                        pieChart.redraw();
 
                         // check if they are the owner of the poll. if they are, then give them the option to delete the poll
                         final SharedPreferences prefs = getSharedPreferences("created", Context.MODE_PRIVATE);
